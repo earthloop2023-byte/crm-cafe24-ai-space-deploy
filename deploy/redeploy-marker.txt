@@ -1,0 +1,2 @@
+force redeploy marker 2026-06-17T16:45:00+09:00
+reason: refresh cafe24 source cache after execution payment status and deposit integer fixes

@@ -1,0 +1,13 @@
+[variables]
+NIXPACKS_METADATA = "node"
+
+providers = ["node"]
+
+[phases.install]
+cmds = ["npm ci --no-audit --no-fund"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "node scripts/cafe24-start.mjs"

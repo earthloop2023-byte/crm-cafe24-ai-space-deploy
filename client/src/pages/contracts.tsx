@@ -3737,9 +3737,9 @@ export default function ContractsPage() {
                     />
                   </div>
                 </TableHead>
-                <TableHead className="w-[82px] px-1.5 text-[11px] font-medium whitespace-nowrap lg:w-auto lg:px-4 lg:text-xs">
+                <TableHead className="w-[96px] px-2 text-[11px] font-medium whitespace-nowrap lg:px-3 lg:text-xs">
                   <div className="flex items-center gap-1">
-                    <span>계약일</span>
+                    <span>계약날짜</span>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
@@ -3761,11 +3761,10 @@ export default function ContractsPage() {
                     </DropdownMenu>
                   </div>
                 </TableHead>
-                <TableHead className="w-[92px] px-1.5 text-[11px] font-medium whitespace-nowrap lg:w-auto lg:px-4 lg:text-xs">
-                  <span className="lg:hidden">연장예정</span>
-                  <span className="hidden lg:inline">계약연장 예정일</span>
+                <TableHead className="w-[108px] px-2 text-[11px] font-medium whitespace-nowrap lg:px-3 lg:text-xs">
+                  <span>연장 예정일</span>
                 </TableHead>
-                <TableHead className="w-[120px] px-1.5 text-[11px] font-medium whitespace-nowrap lg:w-auto lg:px-4 lg:text-xs">
+                <TableHead className="w-[190px] px-3 text-[11px] font-medium whitespace-nowrap lg:px-4 lg:text-xs">
                   <div className="flex items-center gap-1">
                     <span>고객명</span>
                     <DropdownMenu>
@@ -3787,7 +3786,7 @@ export default function ContractsPage() {
                   </div>
                 </TableHead>
                 <TableHead className={cn("w-[84px] text-xs font-medium whitespace-nowrap", mobileOptionalColumnClass)}>사용자ID</TableHead>
-                <TableHead className={cn("w-[230px] text-xs font-medium whitespace-nowrap", mobileOptionalColumnClass)}>상품</TableHead>
+                <TableHead className={cn("w-[175px] text-xs font-medium whitespace-nowrap", mobileOptionalColumnClass)}>상품</TableHead>
                 <TableHead className={cn("w-[42px] text-xs font-medium text-center whitespace-nowrap", desktopOnlyColumnClass)}>일수</TableHead>
                 <TableHead className={cn("w-[42px] text-xs font-medium text-center whitespace-nowrap", desktopOnlyColumnClass)}>수량</TableHead>
                 <TableHead className={cn("text-xs font-medium text-right whitespace-nowrap", mobileOptionalColumnClass)}>공급가액</TableHead>
@@ -3795,6 +3794,7 @@ export default function ContractsPage() {
                 <TableHead className={cn("text-xs font-medium text-center whitespace-nowrap", mobileOptionalColumnClass)}>결제확인</TableHead>
                 <TableHead className={cn("text-xs font-medium text-center whitespace-nowrap", desktopOnlyColumnClass)}>입금통장</TableHead>
                 <TableHead className={cn("text-xs font-medium text-center whitespace-nowrap", desktopOnlyColumnClass)}>부가세</TableHead>
+                <TableHead className={cn("text-xs font-medium whitespace-nowrap", desktopOnlyColumnClass)}>작업자</TableHead>
                 {showProfitColumns && (
                   <>
                     <TableHead className={cn("text-xs font-medium text-right whitespace-nowrap", profitColumnClass)}>작업비</TableHead>
@@ -3802,7 +3802,6 @@ export default function ContractsPage() {
                     <TableHead className={cn("text-xs font-medium text-right whitespace-nowrap", profitColumnClass)}>마진율</TableHead>
                   </>
                 )}
-                <TableHead className={cn("text-xs font-medium whitespace-nowrap", desktopOnlyColumnClass)}>작업자</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -3842,10 +3841,10 @@ export default function ContractsPage() {
                         />
                       </div>
                     </TableCell>
-                    <TableCell className="px-1.5 py-2 text-[11px] whitespace-nowrap align-middle lg:px-4 lg:text-xs">
+                    <TableCell className="px-2 py-2 text-[11px] whitespace-nowrap align-middle lg:px-3 lg:text-xs">
                       {formatDate(contract.contractDate)}
                     </TableCell>
-                    <TableCell className="px-1.5 py-2 text-[11px] whitespace-nowrap align-middle lg:px-4 lg:text-xs">
+                    <TableCell className="px-2 py-2 text-[11px] whitespace-nowrap align-middle lg:px-3 lg:text-xs">
                       <span className="inline-flex items-center gap-1">
                         {(contract as Contract & { renewalDueDate?: string | Date | null }).renewalDueDate
                           ? formatDate((contract as Contract & { renewalDueDate?: string | Date | null }).renewalDueDate as any)
@@ -3860,7 +3859,7 @@ export default function ContractsPage() {
                           )}
                       </span>
                     </TableCell>
-                    <TableCell className="px-1.5 py-2 text-[11px] text-primary align-middle lg:px-4 lg:text-xs">
+                    <TableCell className="px-3 py-2 text-[11px] text-primary align-middle lg:px-4 lg:text-xs">
                       <span className="inline-flex items-center gap-1.5">
                         <span className="block truncate" title={contract.customerName}>{contract.customerName}</span>
                         {isWithdrawnContract(contract) && (
@@ -3911,6 +3910,7 @@ export default function ContractsPage() {
                     <TableCell className={cn("py-2 text-center text-xs whitespace-nowrap align-middle", desktopOnlyColumnClass)}>
                       {getVatDisplayText(contract, item)}
                     </TableCell>
+                    <TableCell className={cn("py-2 text-xs whitespace-nowrap align-middle", desktopOnlyColumnClass)}>{item.worker || "-"}</TableCell>
                     {showProfitColumns && (
                       <>
                         <TableCell className={cn("py-2 text-xs text-right whitespace-nowrap align-middle", profitColumnClass)}>
@@ -3924,7 +3924,6 @@ export default function ContractsPage() {
                         </TableCell>
                       </>
                     )}
-                    <TableCell className={cn("py-2 text-xs whitespace-nowrap align-middle", desktopOnlyColumnClass)}>{item.worker || "-"}</TableCell>
                   </TableRow>
                 ))
               )}

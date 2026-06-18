@@ -2170,6 +2170,12 @@ export default function ContractsPage() {
     return formatCeilAmount(Number.isFinite(value) ? value : 0);
   };
 
+  const truncateDisplayText = (value: string | null | undefined, maxLength: number) => {
+    const text = normalizeText(value);
+    if (!text || text === "-") return text || "-";
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+  };
+
   function normalizeText(value: string | null | undefined) {
     return (value ?? "").toString().trim();
   }
@@ -3706,7 +3712,7 @@ export default function ContractsPage() {
       <Card className="overflow-hidden rounded-none border">
         <CardContent className="p-0">
           <Table
-            className="w-full min-w-[1380px] table-fixed"
+            className="w-full min-w-[1460px] table-fixed"
             wrapperClassName="overflow-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]"
             wrapperStyle={{ maxHeight: contractsTableViewportMaxHeight }}
           >
@@ -3780,12 +3786,12 @@ export default function ContractsPage() {
                     </DropdownMenu>
                   </div>
                 </TableHead>
-                <TableHead className={cn("text-xs font-medium whitespace-nowrap", mobileOptionalColumnClass)}>사용자ID</TableHead>
-                <TableHead className={cn("text-xs font-medium whitespace-nowrap", mobileOptionalColumnClass)}>상품</TableHead>
-                <TableHead className={cn("text-xs font-medium text-center whitespace-nowrap", desktopOnlyColumnClass)}>일수</TableHead>
-                <TableHead className={cn("text-xs font-medium text-center whitespace-nowrap", desktopOnlyColumnClass)}>수량</TableHead>
+                <TableHead className={cn("w-[84px] text-xs font-medium whitespace-nowrap", mobileOptionalColumnClass)}>사용자ID</TableHead>
+                <TableHead className={cn("w-[230px] text-xs font-medium whitespace-nowrap", mobileOptionalColumnClass)}>상품</TableHead>
+                <TableHead className={cn("w-[42px] text-xs font-medium text-center whitespace-nowrap", desktopOnlyColumnClass)}>일수</TableHead>
+                <TableHead className={cn("w-[42px] text-xs font-medium text-center whitespace-nowrap", desktopOnlyColumnClass)}>수량</TableHead>
                 <TableHead className={cn("text-xs font-medium text-right whitespace-nowrap", mobileOptionalColumnClass)}>공급가액</TableHead>
-                <TableHead className={cn("text-xs font-medium whitespace-nowrap", desktopOnlyColumnClass)}>담당자</TableHead>
+                <TableHead className={cn("w-[78px] text-xs font-medium whitespace-nowrap", desktopOnlyColumnClass)}>담당자</TableHead>
                 <TableHead className={cn("text-xs font-medium text-center whitespace-nowrap", mobileOptionalColumnClass)}>결제확인</TableHead>
                 <TableHead className={cn("text-xs font-medium text-center whitespace-nowrap", desktopOnlyColumnClass)}>입금통장</TableHead>
                 <TableHead className={cn("text-xs font-medium text-center whitespace-nowrap", desktopOnlyColumnClass)}>부가세</TableHead>
@@ -3820,9 +3826,9 @@ export default function ContractsPage() {
                     data-testid={itemIndex === 0 ? `row-contract-${contract.id}` : `row-contract-${contract.id}-${itemIndex}`}
                     onClick={() => openContractDialog(contract, "edit")}
                   >
-                    <TableCell className="w-8 p-0 align-top lg:w-12">
+                    <TableCell className="w-8 p-0 align-middle lg:w-12">
                       <div
-                        className="flex min-h-12 w-8 cursor-pointer items-center justify-center py-3 lg:w-12"
+                        className="flex h-10 w-8 cursor-pointer items-center justify-center lg:w-12"
                         onClick={(event) => handleCheckboxAreaClick(event, () => toggleSelectItem(rowKey))}
                         onPointerDown={stopSelectionEventPropagation}
                         title="항목 선택"
@@ -3836,10 +3842,10 @@ export default function ContractsPage() {
                         />
                       </div>
                     </TableCell>
-                    <TableCell className="px-1.5 text-[11px] whitespace-nowrap align-top lg:px-4 lg:text-xs">
+                    <TableCell className="px-1.5 py-2 text-[11px] whitespace-nowrap align-middle lg:px-4 lg:text-xs">
                       {formatDate(contract.contractDate)}
                     </TableCell>
-                    <TableCell className="px-1.5 text-[11px] whitespace-nowrap align-top lg:px-4 lg:text-xs">
+                    <TableCell className="px-1.5 py-2 text-[11px] whitespace-nowrap align-middle lg:px-4 lg:text-xs">
                       <span className="inline-flex items-center gap-1">
                         {(contract as Contract & { renewalDueDate?: string | Date | null }).renewalDueDate
                           ? formatDate((contract as Contract & { renewalDueDate?: string | Date | null }).renewalDueDate as any)
@@ -3854,9 +3860,9 @@ export default function ContractsPage() {
                           )}
                       </span>
                     </TableCell>
-                    <TableCell className="px-1.5 text-[11px] text-primary align-top lg:px-4 lg:text-xs">
+                    <TableCell className="px-1.5 py-2 text-[11px] text-primary align-middle lg:px-4 lg:text-xs">
                       <span className="inline-flex items-center gap-1.5">
-                        <span className="line-clamp-2 break-keep">{contract.customerName}</span>
+                        <span className="block truncate" title={contract.customerName}>{contract.customerName}</span>
                         {isWithdrawnContract(contract) && (
                           <Badge variant="outline" className="rounded-none border-amber-300 bg-amber-100 px-1.5 py-0 text-[10px] text-amber-800">
                             철회
@@ -3864,18 +3870,20 @@ export default function ContractsPage() {
                         )}
                       </span>
                     </TableCell>
-                    <TableCell className={cn("text-xs whitespace-nowrap", mobileOptionalColumnClass)}>{item.userIdentifier || "-"}</TableCell>
-                    <TableCell className={cn("text-xs max-w-[190px] break-all", mobileOptionalColumnClass)}>{item.productName || "-"}</TableCell>
-                    <TableCell className={cn("text-xs text-center whitespace-nowrap", desktopOnlyColumnClass)}>{getEffectiveDays(item)}</TableCell>
-                    <TableCell className={cn("text-xs text-center whitespace-nowrap", desktopOnlyColumnClass)}>{getItemQuantity(item)}</TableCell>
-                    <TableCell className={cn("text-xs text-right whitespace-nowrap", mobileOptionalColumnClass)}>
+                    <TableCell className={cn("py-2 text-xs whitespace-nowrap align-middle", mobileOptionalColumnClass)}>{item.userIdentifier || "-"}</TableCell>
+                    <TableCell className={cn("py-2 text-xs whitespace-nowrap align-middle", mobileOptionalColumnClass)}>
+                      <span className="block truncate" title={item.productName || "-"}>{item.productName || "-"}</span>
+                    </TableCell>
+                    <TableCell className={cn("w-[42px] py-2 text-xs text-center whitespace-nowrap align-middle", desktopOnlyColumnClass)}>{getEffectiveDays(item)}</TableCell>
+                    <TableCell className={cn("w-[42px] py-2 text-xs text-center whitespace-nowrap align-middle", desktopOnlyColumnClass)}>{getItemQuantity(item)}</TableCell>
+                    <TableCell className={cn("py-2 text-xs text-right whitespace-nowrap align-middle", mobileOptionalColumnClass)}>
                       <span>{formatCurrency(getItemOriginalAmount(item))}</span>
                     </TableCell>
-                    <TableCell className={cn("text-xs whitespace-nowrap align-top", desktopOnlyColumnClass)}>
-                      {contract.managerName}
+                    <TableCell className={cn("py-2 text-xs whitespace-nowrap align-middle", desktopOnlyColumnClass)} title={contract.managerName || "-"}>
+                      {truncateDisplayText(contract.managerName, 4)}
                     </TableCell>
                     <TableCell
-                      className={cn("text-center text-xs whitespace-nowrap align-top", mobileOptionalColumnClass, getPaymentMethodTextClassName(contract.paymentMethod))}
+                      className={cn("py-2 text-center text-xs whitespace-nowrap align-middle", mobileOptionalColumnClass, getPaymentMethodTextClassName(contract.paymentMethod))}
                       data-testid={`text-payment-method-${contract.id}-${itemIndex}`}
                     >
                       {(() => {
@@ -3897,26 +3905,26 @@ export default function ContractsPage() {
                         );
                       })()}
                     </TableCell>
-                    <TableCell className={cn("text-center text-xs whitespace-nowrap align-top", desktopOnlyColumnClass)}>
+                    <TableCell className={cn("py-2 text-center text-xs whitespace-nowrap align-middle", desktopOnlyColumnClass)}>
                       {getDepositBankDisplayLabel(contract)}
                     </TableCell>
-                    <TableCell className={cn("text-center text-xs whitespace-nowrap align-top", desktopOnlyColumnClass)}>
+                    <TableCell className={cn("py-2 text-center text-xs whitespace-nowrap align-middle", desktopOnlyColumnClass)}>
                       {getVatDisplayText(contract, item)}
                     </TableCell>
                     {showProfitColumns && (
                       <>
-                        <TableCell className={cn("text-xs text-right whitespace-nowrap align-top", profitColumnClass)}>
+                        <TableCell className={cn("py-2 text-xs text-right whitespace-nowrap align-middle", profitColumnClass)}>
                           {calculateWorkCost(item) ? formatCurrency(calculateWorkCost(item)) : "-"}
                         </TableCell>
-                        <TableCell className={cn("text-xs text-right whitespace-nowrap align-top", profitColumnClass)}>
+                        <TableCell className={cn("py-2 text-xs text-right whitespace-nowrap align-middle", profitColumnClass)}>
                           {formatCurrency(getItemMargin(item))}
                         </TableCell>
-                        <TableCell className={cn("text-xs text-right whitespace-nowrap align-top", profitColumnClass)}>
+                        <TableCell className={cn("py-2 text-xs text-right whitespace-nowrap align-middle", profitColumnClass)}>
                           {formatPercent(getItemMarginRate(item))}
                         </TableCell>
                       </>
                     )}
-                    <TableCell className={cn("text-xs whitespace-nowrap", desktopOnlyColumnClass)}>{item.worker || "-"}</TableCell>
+                    <TableCell className={cn("py-2 text-xs whitespace-nowrap align-middle", desktopOnlyColumnClass)}>{item.worker || "-"}</TableCell>
                   </TableRow>
                 ))
               )}

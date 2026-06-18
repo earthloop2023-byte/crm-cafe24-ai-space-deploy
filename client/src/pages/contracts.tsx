@@ -998,7 +998,8 @@ export default function ContractsPage() {
   // Product item calculations
   const toNonNegativeInt = (v: unknown) => Math.max(0, Math.round(Number(v) || 0));
   const toNonNegativeAmount = (v: unknown) => Math.max(0, Number(v) || 0);
-  const toNonNegativeWholeAmount = (v: unknown) => Math.max(0, Math.floor(Number(v) || 0));
+  const toNonNegativeWholeAmount = (v: unknown) => Math.max(0, Math.round(Number(v) || 0));
+  const toSignedWholeAmount = (v: unknown) => Math.round(Number(v) || 0);
   const toSignedInt = (v: unknown) => Math.round(Number(v) || 0);
   const toSignedAmount = (v: unknown) => {
     const parsed = Number(v);
@@ -1252,9 +1253,9 @@ export default function ContractsPage() {
     items
       .filter((item) => String(item.productName || "").trim())
       .map((item) => {
-        const supplyAmount = calculateSupplyAmount(item);
-        const vatAmount = calculateVat(item);
-        const workCostAmount = calculateWorkCost(item);
+        const supplyAmount = toSignedWholeAmount(calculateSupplyAmount(item));
+        const vatAmount = toSignedWholeAmount(calculateVat(item));
+        const workCostAmount = toSignedWholeAmount(calculateWorkCost(item));
         const hasStoredGrossSupplyAmount = item.grossSupplyAmount !== null && item.grossSupplyAmount !== undefined;
         const storedGrossSupplyAmount = hasStoredGrossSupplyAmount ? Number(item.grossSupplyAmount) : Number.NaN;
         const storedRefundAmount = Number(item.refundAmount);
@@ -1267,31 +1268,31 @@ export default function ContractsPage() {
           productName: String(item.productName || "").trim(),
           userIdentifier: String(item.userIdentifier || "").trim(),
           vatType: normalizeVatType(item.vatType),
-          unitPrice: Number(item.unitPrice) || 0,
+          unitPrice: toSignedWholeAmount(item.unitPrice),
           days: getEffectiveDays(item),
           addQuantity: 0,
           extendQuantity: 0,
           quantity: getItemQuantity(item),
           baseDays: Math.max(1, toNonNegativeInt(item.baseDays) || 1),
           worker: String(item.worker || "").trim(),
-          workCost: Math.max(0, Number(item.workCost) || 0),
+          workCost: toNonNegativeWholeAmount(item.workCost),
           fixedWorkCostAmount:
             item.fixedWorkCostAmount === null || item.fixedWorkCostAmount === undefined
               ? null
-              : toNonNegativeAmount(item.fixedWorkCostAmount),
-        disbursementStatus: "",
+              : toNonNegativeWholeAmount(item.fixedWorkCostAmount),
+          disbursementStatus: "",
           supplyAmount,
           grossSupplyAmount: hasStoredGrossSupplyAmount && Number.isFinite(storedGrossSupplyAmount)
-            ? storedGrossSupplyAmount
+            ? toSignedWholeAmount(storedGrossSupplyAmount)
             : supplyAmount + vatAmount,
           refundAmount: Number.isFinite(storedRefundAmount)
-            ? Math.max(0, storedRefundAmount)
+            ? toNonNegativeWholeAmount(storedRefundAmount)
             : 0,
           negativeAdjustmentAmount: Number.isFinite(storedNegativeAdjustmentAmount)
-            ? storedNegativeAdjustmentAmount
+            ? toSignedWholeAmount(storedNegativeAdjustmentAmount)
             : 0,
           marginAmount: hasStoredMarginAmount && Number.isFinite(storedMarginAmount)
-            ? storedMarginAmount
+            ? toSignedWholeAmount(storedMarginAmount)
             : supplyAmount - workCostAmount,
         };
       });
@@ -1453,12 +1454,12 @@ export default function ContractsPage() {
     const firstItem = validItems[0];
     return {
       products: storedProductItems.map((item) => item.productName).join(", "),
-      cost: validItems.reduce((sum, item) => sum + calculateSupplyAmount(item), 0),
+      cost: toSignedWholeAmount(validItems.reduce((sum, item) => sum + calculateSupplyAmount(item), 0)),
       days: firstItem ? getEffectiveDays(firstItem) : Number(contract.days) || 0,
       addQuantity: 0,
       extendQuantity: 0,
       quantity: firstItem ? getItemQuantity(firstItem) : Math.max(0, Number(contract.quantity) || 0),
-      workCost: validItems.reduce((sum, item) => sum + calculateWorkCost(item), 0),
+      workCost: toSignedWholeAmount(validItems.reduce((sum, item) => sum + calculateWorkCost(item), 0)),
       worker: storedProductItems.map((item) => item.worker).filter(Boolean).join(", "),
       userIdentifier: storedProductItems.map((item) => item.userIdentifier).filter(Boolean).join(", "),
       invoiceIssued: deriveInvoiceIssuedText(storedProductItems, contract.invoiceIssued),
@@ -1646,12 +1647,12 @@ export default function ContractsPage() {
       managerId: managerSelection.managerId,
       managerName: managerSelection.managerName,
       products: productNames,
-      cost: totalSupplyAmount,
+      cost: toSignedWholeAmount(totalSupplyAmount),
       days: firstProduct ? getEffectiveDays(firstProduct) : 0,
       addQuantity: 0,
       extendQuantity: 0,
       quantity: firstProduct ? getItemQuantity(firstProduct) : 0,
-      workCost: totalWorkCost,
+      workCost: toSignedWholeAmount(totalWorkCost),
       worker: workerNames,
       userIdentifier: userIdentifiers,
       paymentConfirmed: false,
@@ -1789,12 +1790,12 @@ export default function ContractsPage() {
       managerId: managerSelection.managerId,
       managerName: managerSelection.managerName,
       products: productNames,
-      cost: totalSupplyAmount,
+      cost: toSignedWholeAmount(totalSupplyAmount),
       days: firstProduct ? getEffectiveDays(firstProduct) : 0,
       addQuantity: 0,
       extendQuantity: 0,
       quantity: firstProduct ? getItemQuantity(firstProduct) : 0,
-      workCost: totalWorkCost,
+      workCost: toSignedWholeAmount(totalWorkCost),
       worker: workerNames,
       userIdentifier: userIdentifiers,
       paymentConfirmed: preserveConfirmedPayment ? true : false,

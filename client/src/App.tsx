@@ -153,18 +153,18 @@ function AuthenticatedApp() {
         <PermissionsProvider>
           <SettingsProvider>
             <SidebarProvider style={style as React.CSSProperties}>
-              <div className="flex h-screen w-full">
+              <div className="flex h-[100dvh] min-w-0 w-full overflow-hidden">
                 <AppSidebar />
-                <div className="flex flex-col flex-1 overflow-hidden">
-                  <header className="flex items-center justify-between gap-2 p-3 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+                  <header className="sticky top-0 z-30 flex min-h-14 items-center justify-between gap-2 border-b bg-background/95 px-2 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 sm:px-3">
                     <SidebarTrigger data-testid="button-sidebar-toggle" />
-                    <div className="flex items-center gap-2">
+                    <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
                       <ThemeToggle />
                       <RenewalAlertMenu />
                       <UserProfileMenu />
                     </div>
                   </header>
-                  <main className="min-h-0 flex-1 overflow-auto">
+                  <main className="min-h-0 min-w-0 flex-1 overflow-auto overscroll-contain bg-background">
                     <Router />
                   </main>
                 </div>

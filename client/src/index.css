@@ -187,9 +187,49 @@
     text-size-adjust: 100%;
     overflow: hidden;
   }
+
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
 }
 
 @media (max-width: 1024px) {
+  .p-6 {
+    padding: 1rem !important;
+  }
+
+  .px-6 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .py-6 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem !important;
+  }
+
+  .gap-6 {
+    gap: 1rem !important;
+  }
+
+  .max-w-7xl,
+  .max-w-6xl,
+  .max-w-5xl {
+    max-width: 100% !important;
+  }
+
+  [data-radix-popper-content-wrapper] {
+    max-width: calc(100vw - 16px) !important;
+  }
+
   [data-radix-dialog-content] {
     width: min(calc(100vw - 24px), var(--radix-dialog-content-available-width, 100vw)) !important;
     max-width: calc(100vw - 24px) !important;
@@ -201,6 +241,30 @@
 }
 
 @media (max-width: 640px) {
+  .p-6 {
+    padding: 0.75rem !important;
+  }
+
+  .px-6 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .py-6 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+
+  .space-y-6 > :not([hidden]) ~ :not([hidden]),
+  .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.75rem !important;
+  }
+
+  .gap-4,
+  .gap-6 {
+    gap: 0.75rem !important;
+  }
+
   [data-sidebar="sidebar"] {
     max-width: min(86vw, 20rem);
   }
@@ -214,6 +278,26 @@
   textarea,
   button {
     font-size: 16px;
+  }
+
+  .w-\[420px\],
+  .w-\[480px\],
+  .w-\[520px\],
+  .w-\[560px\],
+  .w-\[600px\] {
+    width: calc(100vw - 24px) !important;
+  }
+
+  .min-w-\[1280px\] {
+    min-width: 980px !important;
+  }
+
+  .min-w-\[1000px\] {
+    min-width: 860px !important;
+  }
+
+  .min-w-\[800px\] {
+    min-width: 720px !important;
   }
 }
 

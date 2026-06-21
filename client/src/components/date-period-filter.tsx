@@ -91,8 +91,8 @@ export function DatePeriodFilter({
   onStartDateChange,
   onEndDateChange,
   onReset,
-  buttonClassName = "w-56 justify-start gap-2 rounded-none",
-  selectClassName = "w-32 rounded-none",
+  buttonClassName = "w-full justify-start gap-2 rounded-none sm:w-56",
+  selectClassName = "w-full rounded-none sm:w-32",
   buttonTestId = "filter-date",
   selectTestId = "filter-period",
 }: DatePeriodFilterProps) {
